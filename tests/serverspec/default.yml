@@ -1,0 +1,42 @@
+---
+- hosts: localhost
+  roles:
+    - trombik.redis
+    - ansible-role-ntopng
+  pre_tasks:
+    - name: Dump all hostvars
+      debug:
+        var: hostvars[inventory_hostname]
+  post_tasks:
+    - name: List all services (systemd)
+      # workaround ansible-lint: [303] service used in place of service module
+      shell: "echo; systemctl list-units --type service"
+      changed_when: false
+      when:
+        - ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
+    - name: list all services (FreeBSD service)
+      # workaround ansible-lint: [303] service used in place of service module
+      shell: "echo; service -l"
+      changed_when: false
+      when:
+        - ansible_os_family == 'FreeBSD'
+  vars:
+    redis_config:
+      databases: 16
+      save 900: 1
+    os_ntopng_flags:
+      OpenBSD: ""
+      FreeBSD: "ntopng_flags='{{ ntopng_config_file }}'"
+      Debian: ""
+      RedHat: ""
+    ntopng_flags: "{{ os_ntopng_flags[ansible_os_family] }}"
+    ntopng_extra_groups:
+      - bin
+    ntopng_config: |
+      {% if ansible_os_family == 'Debian' %}
+      -e=
+      --data-dir={{ ntopng_db_dir }}
+      --user={{ ntopng_user }}
+      {% endif %}
+      --http-port=:3001
+      --disable-login=1
