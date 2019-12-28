@@ -30,6 +30,12 @@
     - role: docker
       when:
         - ansible_virtualization_type == 'docker'
+    - role: trombik.apt_repo
+      when:
+        - ansible_os_family == 'Debian'
+    - role: trombik.redhat_repo
+      when:
+        - ansible_os_family == 'RedHat'
     - role: trombik.redis
     - role: ansible-role-ntopng
   vars:
