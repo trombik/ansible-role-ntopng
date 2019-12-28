@@ -1,7 +1,7 @@
 require "spec_helper"
 require "serverspec"
 
-package = nil
+package = ""
 service = "ntopng"
 config_dir = "/etc/ntopng"
 config_mode = 644
@@ -40,8 +40,6 @@ end
 
 log_dir_mode = 750
 log_mode = 600
-log_owner = user
-log_group = default_group
 log_dir_owner = user
 log_dir_group = group
 log_file = ""
@@ -52,6 +50,10 @@ else
   log_file = "#{log_dir}/ntopng.log"
 end
 config = "#{config_dir}/ntopng.conf"
+
+describe package(package) do
+  it { should be_installed }
+end
 
 extra_packages.each do |p|
   describe package p do
