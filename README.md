@@ -151,7 +151,7 @@ passed to `rcctl set ntopng`.
       --data-dir={{ ntopng_db_dir }}
       --user={{ ntopng_user }}
       {% endif %}
-      --http-port=:3001
+      --http-port={{ ansible_default_ipv4['address'] }}:3001
       --disable-login=1
     apt_repo_keys_to_add:
       - http://packages.ntop.org/apt-stable/ntop.key

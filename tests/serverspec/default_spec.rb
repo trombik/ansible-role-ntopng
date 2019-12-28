@@ -86,7 +86,7 @@ describe file(config) do
   it { should be_owned_by default_user }
   it { should be_grouped_into default_group }
   its(:content) { should match(/Managed by ansible/) }
-  its(:content) { should match(/--http-port=:3001/) }
+  its(:content) { should match(/--http-port=\d+\.\d+\.\d+\.\d+:3001/) }
   its(:content) { should match(/--disable-login=1/) }
 end
 
