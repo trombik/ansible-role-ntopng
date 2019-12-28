@@ -7,7 +7,6 @@ dependency:
 driver:
   name: docker
 
-
 lint:
   name: yamllint
 
@@ -23,18 +22,6 @@ platforms:
     networks:
       - name: shared
         aliases: server1
-
-  - name: client1
-    hostname: client1
-    image: geerlingguy/docker-ubuntu1804-ansible
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    command: /lib/systemd/systemd
-    privileged: true
-    pre_build_image: true
-    networks:
-      - name: shared
-        aliases: client1
 
 provisioner:
   name: ansible

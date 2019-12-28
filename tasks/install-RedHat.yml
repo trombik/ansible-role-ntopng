@@ -1,27 +1,27 @@
 ---
 
-- name: Install template_role_extra_packages
+- name: Install ntopng_extra_packages
   yum:
-    name: "{{ template_role_extra_packages }}"
+    name: "{{ ntopng_extra_packages }}"
     state: present
 
-- name: Install template_role_package
+- name: Install ntopng_package
   yum:
-    name: "{{ template_role_package }}"
+    name: "{{ ntopng_package }}"
     state: present
 
-- name: Enable template_role_service
+- name: Enable ntopng_service
   service:
-    name: "{{ template_role_service }}"
+    name: "{{ ntopng_service }}"
     enabled: yes
 
-- name: "Create /etc/sysconfig/{{ template_role_service }}"
+- name: "Create /etc/sysconfig/{{ ntopng_service }}"
   template:
     src: RedHat.sysconfig.j2
-    dest: "/etc/sysconfig/{{ template_role_service }}"
+    dest: "/etc/sysconfig/{{ ntopng_service }}"
     mode: 0644
     # keep the original copy in case you need the defaults in it
     backup: yes
     validate: sh -n %s
   notify:
-    - Restart template_role_service
+    - Restart ntopng_service

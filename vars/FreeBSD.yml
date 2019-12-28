@@ -1,6 +1,7 @@
 ---
 __ntopng_service: ntopng
 __ntopng_package: net/ntopng
+__ntopng_extra_packages: []
 __ntopng_config_dir: /usr/local/etc/ntopng
 __ntopng_user: ntopng
 __ntopng_group: ntopng

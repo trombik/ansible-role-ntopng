@@ -27,11 +27,15 @@ when "freebsd"
   log_dir = "/var/db/ntopng"
   db_dir = log_dir
 when "ubuntu"
-  config_dir = "/etc"
   default_group = "root"
   log_dir = "/var/log/ntopng"
   db_dir = "/var/lib/ntopng"
+  config_mode = 664
 when "redhat"
+  default_group = "root"
+  log_dir = "/var/log/ntopng"
+  db_dir = "/var/lib/ntopng"
+  config_mode = 644
 end
 
 log_dir_mode = 750
@@ -40,7 +44,13 @@ log_owner = user
 log_group = default_group
 log_dir_owner = user
 log_dir_group = group
-log_file = "#{log_dir}/ntopng.log"
+log_file = ""
+case os[:family]
+when "ubuntu", "redhat"
+  log_file = "/var/log/ntop-systemd.log"
+else
+  log_file = "#{log_dir}/ntopng.log"
+end
 config = "#{config_dir}/ntopng.conf"
 
 extra_packages.each do |p|
@@ -59,7 +69,12 @@ end
 describe file(config_dir) do
   it { should exist }
   it { should be_directory }
-  it { should be_mode 755 }
+  case os[:family]
+  when "ubuntu"
+    it { should be_mode 775 }
+  else
+    it { should be_mode 755 }
+  end
   it { should be_owned_by default_user }
   it { should be_grouped_into default_group }
 end
@@ -149,7 +164,14 @@ end
 
 describe file(log_file) do
   it { should be_file }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
-  it { should be_mode os[:family] == "ubuntu" ? 644 : log_mode }
+  case os[:family]
+  when "ubuntu", "redhat"
+    it { should be_owned_by default_user }
+    it { should be_grouped_into default_group }
+    it { should be_mode 644 }
+  else
+    it { should be_owned_by user }
+    it { should be_grouped_into group }
+    it { should be_mode log_mode }
+  end
 end

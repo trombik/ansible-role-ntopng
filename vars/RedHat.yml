@@ -1,6 +1,9 @@
 ---
-__template_role_service: sshd
-__template_role_package: openssh-server
-__template_role_config_dir: /etc/ssh
-__template_role_user: sshd
-__template_role_group: sshd
+__ntopng_service: ntopng
+__ntopng_package: ntopng
+__ntopng_extra_packages: []
+__ntopng_config_dir: /etc/ntopng
+__ntopng_user: ntopng
+__ntopng_group: ntopng
+__ntopng_db_dir: /var/lib/ntopng
+__ntopng_log_dir: /var/log/ntopng

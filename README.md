@@ -1,12 +1,15 @@
-# `trombik.template_role`
+# `trombik.ntopng`
 
-[![Build Status](https://travis-ci.com/trombik/trombik.template_role.svg?branch=master)](https://travis-ci.com/trombik/trombik.template_role)
+[![Build Status](https://travis-ci.com/trombik/ansible-role-ntopng.svg?branch=master)](https://travis-ci.com/trombik/ansible-role-ntopng)
 
-`ansible` role for `template_role`.
+`ansible` role for `ntopng`.
 
-This is a template role to develop new `ansible` role. Not to be used as
-`ansible` role. Please see [README.about.md](README.about.md) for more
-details.
+## Notes for Ubuntu users
+
+`ntopng` from the official distribution package repository and one from the
+ntop.org has differences. The major one is the path to `ntopng.conf`:
+`/etc/ntopng.conf` for the former and `/etc/ntopng/ntopng.conf`. The default
+of the role is `/etc/ntopng/ntopng.conf`.
 
 # Requirements
 
@@ -14,116 +17,84 @@ details.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `template_role_package` | Package name of `template_role` | `{{ __template_role_package }}` |
-| `template_role_service` | Service name of `template_role` | `{{ __template_role_service }}` |
-| `template_role_extra_packages` | A list of extra package to install | `[]` |
-| `template_role_user` | User name of `template_role` | `{{ __template_role_user }}` |
-| `template_role_group` | Group name of `template_role` | `{{ __template_role_group }}` |
-| `template_role_extra_groups` | A list of extra groups for `template_role_user` | `[]` |
-| `template_role_log_dir` | Path to log directory | `/var/log/template_role` |
-| `template_role_config_dir` | Path to the configuration directory | `{{ __template_role_config_dir }}` |
-| `template_role_config_file` | Path to `template_role.conf` | `{{ template_role_config_dir }}/sshd_config` |
-| `template_role_config` | The content of `template_role.conf` | `""` |
-| `template_role_flags` | See below | `""` |
+| `ntopng_package` | Package name of `ntopng` | `{{ __ntopng_package }}` |
+| `ntopng_service` | Service name of `ntopng` | `{{ __ntopng_service }}` |
+| `ntopng_extra_packages` | A list of extra package to install | `[]` |
+| `ntopng_user` | User name of `ntopng` | `{{ __ntopng_user }}` |
+| `ntopng_group` | Group name of `ntopng` | `{{ __ntopng_group }}` |
+| `ntopng_extra_groups` | A list of extra groups for `ntopng_user` | `[]` |
+| `ntopng_config_dir` | Path to the configuration directory | `{{ __ntopng_config_dir }}` |
+| `ntopng_config_file` | Path to `ntopng.conf` | `{{ ntopng_config_dir }}/sshd_config` |
+| `ntopng_config` | The content of `ntopng.conf` | `""` |
+| `ntopng_flags` | See below | `""` |
+| `ntopng_db_dir` | Path to database directory | `__ntopng_db_dir` |
+| `ntopng_log_dir` | Path to log directory. Depending on the source of the package, this directory might not be used at all | `__ntopng_log_dir` |
 
-## `template_role_flags`
+## `ntopng_flags`
 
 This variable is used for overriding defaults for startup scripts. In Debian
-variants, the value is the content of `/etc/default/template_role`. In RedHat
-variants, it is the content of `/etc/sysconfig/template_role`. In FreeBSD, it
-is the content of `/etc/rc.conf.d/template_role`. In OpenBSD, the value is
-passed to `rcctl set template_role`.
+variants, the value is the content of `/etc/default/ntopng`. In RedHat
+variants, it is the content of `/etc/sysconfig/ntopng`. In FreeBSD, it
+is the content of `/etc/rc.conf.d/ntopng`. In OpenBSD, the value is
+passed to `rcctl set ntopng`.
 
 ## Debian
 
 | Variable | Default |
 |----------|---------|
-| `__template_role_service` | `ssh` |
-| `__template_role_package` | `openssh-server` |
-| `__template_role_config_dir` | `/etc/ssh` |
-| `__template_role_user` | `sshd` |
-| `__template_role_group` | `nogroup` |
+| `__ntopng_service` | `ntopng` |
+| `__ntopng_package` | `ntopng` |
+| `__ntopng_extra_packages` | `["net-tools"]` |
+| `__ntopng_config_dir` | `/etc/ntopng` |
+| `__ntopng_user` | `ntopng` |
+| `__ntopng_group` | `ntopng` |
+| `__ntopng_db_dir` | `/var/lib/ntopng` |
+| `__ntopng_log_dir` | `/var/log/ntopng` |
 
 ## FreeBSD
 
 | Variable | Default |
 |----------|---------|
-| `__template_role_service` | `openssh` |
-| `__template_role_package` | `security/openssh-portable` |
-| `__template_role_config_dir` | `/usr/local/etc/ssh` |
-| `__template_role_user` | `sshd` |
-| `__template_role_group` | `sshd` |
+| `__ntopng_service` | `ntopng` |
+| `__ntopng_package` | `net/ntopng` |
+| `__ntopng_extra_packages` | `[]` |
+| `__ntopng_config_dir` | `/usr/local/etc/ntopng` |
+| `__ntopng_user` | `ntopng` |
+| `__ntopng_group` | `ntopng` |
+| `__ntopng_db_dir` | `/var/db/ntopng` |
+| `__ntopng_log_dir` | `{{ __ntopng_db_dir }}` |
 
 ## OpenBSD
 
 | Variable | Default |
 |----------|---------|
-| `__template_role_service` | `sshd` |
-| `__template_role_package` | `""` |
-| `__template_role_config_dir` | `/etc/ssh` |
-| `__template_role_user` | `sshd` |
-| `__template_role_group` | `sshd` |
+| `__ntopng_service` | `ntopng` |
+| `__ntopng_package` | `ntopng` |
+| `__ntopng_extra_packages` | `[]` |
+| `__ntopng_config_dir` | `/etc/ntopng` |
+| `__ntopng_user` | `_ntopng` |
+| `__ntopng_group` | `_ntopng` |
+| `__ntopng_db_dir` | `/var/db/ntopng` |
+| `__ntopng_log_dir` | `{{ __ntopng_db_dir }}` |
 
 ## RedHat
 
 | Variable | Default |
 |----------|---------|
-| `__template_role_service` | `sshd` |
-| `__template_role_package` | `openssh-server` |
-| `__template_role_config_dir` | `/etc/ssh` |
-| `__template_role_user` | `sshd` |
-| `__template_role_group` | `sshd` |
+| `__ntopng_service` | `ntopng` |
+| `__ntopng_package` | `ntopng` |
+| `__ntopng_extra_packages` | `[]` |
+| `__ntopng_config_dir` | `/etc/ntopng` |
+| `__ntopng_user` | `ntopng` |
+| `__ntopng_group` | `ntopng` |
+| `__ntopng_db_dir` | `/var/lib/ntopng` |
+| `__ntopng_log_dir` | `/var/log/ntopng` |
 
 # Dependencies
 
 # Example Playbook
 
 ```yaml
----
-- hosts: localhost
-  roles:
-    - trombik.template_role
-  pre_tasks:
-    - name: Dump all hostvars
-      debug:
-        var: hostvars[inventory_hostname]
-  post_tasks:
-    - name: List all services (systemd)
-      # workaround ansible-lint: [303] service used in place of service module
-      shell: "echo; systemctl list-units --type service"
-      changed_when: false
-      when:
-        # in docker, init is not systemd
-        - ansible_virtualization_type != 'docker'
-        - ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
-    - name: list all services (FreeBSD service)
-      # workaround ansible-lint: [303] service used in place of service module
-      shell: "echo; service -l"
-      changed_when: false
-      when:
-        - ansible_os_family == 'FreeBSD'
-  vars:
-    os_template_role_flags:
-      OpenBSD: -4
-      FreeBSD: ""
-      Debian: ""
-      RedHat: ""
-
-    # on RedHat, non-default port is not allowed to listen on
-    # on FreeBSD, sshd from the base and one from the package are both running
-    os_ports:
-      OpenBSD: [22, 10022]
-      FreeBSD: [10022]
-      Debian: [22, 10022]
-      RedHat: [22]
-    template_role_flags: "{{ os_template_role_flags[ansible_os_family] }}"
-    template_role_extra_groups:
-      - bin
-    template_role_config: |
-      UseDNS no
-      {% for p in os_ports[ansible_os_family] %}
-      Port {{ p }}
-      {% endfor %}
 ```
 
 # License
