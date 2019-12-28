@@ -60,13 +60,18 @@
         - pfring
         - ntopng-data
     ntopng_extra_packages: "{{ os_ntopng_extra_packages[ansible_os_family] }}"
+    os_http_ip_addr:
+      FreeBSD: "{{ ansible_em1['ipv4'][0]['address'] | default(omit) }}"
+      OpenBSD: "{{ ansible_em1['ipv4'][0]['address'] | default(omit) }}"
+      Debian: "{{ ansible_eth1['ipv4']['address'] | default(omit) }}"
+      RedHat: "{{ ansible_eth1['ipv4']['address'] | default(omit) }}"
     ntopng_config: |
       {% if ansible_os_family == 'Debian' %}
       -e=
       --data-dir={{ ntopng_db_dir }}
       --user={{ ntopng_user }}
       {% endif %}
-      --http-port=:3000
+      --http-port={{ os_http_ip_addr[ansible_os_family] }}:3000
       --disable-login=1
     apt_repo_keys_to_add:
       - http://packages.ntop.org/apt-stable/ntop.key

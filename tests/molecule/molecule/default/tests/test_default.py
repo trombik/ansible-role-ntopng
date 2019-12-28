@@ -35,6 +35,19 @@ def is_docker(host):
     return False
 
 
+def get_ipv4_addr(host):
+    ansible_facts = get_ansible_facts(host)
+    if host.system_info.distribution == 'freebsd':
+        return ansible_facts['ansible_em1']['ipv4'][0]['address']
+    if host.system_info.distribution == 'openbsd':
+        return ansible_facts['ansible_em1']['ipv4'][0]['address']
+    elif host.system_info.distribution == 'ubuntu':
+        return ansible_facts['ansible_eth1']['ipv4']['address']
+    elif host.system_info.distribution == 'centos':
+        return ansible_facts['ansible_eth1']['ipv4']['address']
+    raise NameError('Unknown distribution')
+
+
 def get_listen_ports(host):
     return [3000]
 
@@ -56,8 +69,7 @@ def test_service(host):
 
 def test_port(host):
     ports = get_listen_ports(host)
+    ipv4_addr = get_ipv4_addr(host)
 
     for p in ports:
-        # XXX host.socket() does not work on FreeBSD
-        if not host.system_info.distribution == 'freebsd':
-            assert host.socket("tcp://:::%d" % p).is_listening
+        assert host.socket("tcp://%s:%d" % (ipv4_addr, p)).is_listening
